@@ -4,26 +4,6 @@
 
 ## Components ##
 
-### YandexMaps\Map ###
-
-Map instance.
-
-__Usage__
-
-```php
-$map = new Map('demo', array(
-		'center' => array('js:ymaps.geolocation.latitude', 'js:ymaps.geolocation.longitude'),
-		'zoom' => 10,
-		// Enable zoom with mouse scroll
-		'behaviors' => array('default', 'scrollZoom'),
-		'type' => "yandex#map",
-	), array(
-		// Permit zoom only fro 9 to 11
-		'minZoom' => 9,
-		'maxZoom' => 11,
-	));
-```
-
 ### YandexMaps\Api ###
 
 Application components which register scripts.
@@ -49,6 +29,26 @@ protected function afterRender($view, &$output)
 }
 ```
 
+### YandexMaps\Map ###
+
+Map instance.
+
+__Usage__
+
+```php
+$map = new Map('demo', array(
+		'center' => array('js:ymaps.geolocation.latitude', 'js:ymaps.geolocation.longitude'),
+		'zoom' => 10,
+		// Enable zoom with mouse scroll
+		'behaviors' => array('default', 'scrollZoom'),
+		'type' => "yandex#map",
+	), array(
+		// Permit zoom only fro 9 to 11
+		'minZoom' => 9,
+		'maxZoom' => 11,
+	));
+```
+
 ### YandexMaps\Canvas ###
 
 This is widget which render html tag for your map.
@@ -65,3 +65,5 @@ $this->widget('\YandexMaps\Canvas', array(
 		'map' => $map,
 	));
 ```
+
+*more example you can found in folder `Test`*
