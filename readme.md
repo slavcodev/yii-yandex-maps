@@ -3,7 +3,6 @@
 * * *
 
 ## Components ##
-```
 
 ### YandexMaps\Map ###
 
