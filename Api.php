@@ -122,6 +122,26 @@ class Api extends Component
 					$js .= "$id.geoObjects.add($object);\n";
 				}
 			}
+
+			if (count($map->controls) > 0) {
+				// TODO: Add controls array.
+				foreach ($map->controls as $control) {
+					// TODO: Add control object.
+					if (is_object($control)) {
+						$control = $this->generateObject($control);
+					}
+					// TODO: Add control options, e.g. add("smallZoomControl", {left: '5px', top: '5px'})
+					$js .= "$id.controls.add('$control');\n";
+				}
+			}
+
+			if (count($map->events) > 0) {
+				foreach ($map->events as $event => $handle) {
+					$event = JS::encode($event);
+					$handle = JS::encode($handle);
+					$js .= "$id.events.add($event, $handle);\n";
+				}
+			}
 		}
 
 		return $js;
@@ -148,6 +168,16 @@ class Api extends Component
 		$options = JS::encode($object->options);
 
 		$js = "new ymaps.Polyline($geometry, $properties, $options)";
+		if (null !== $var) {
+			$js = "var $var = $js;\n";
+		}
+
+		return $js;
+	}
+
+	public function generateJavaScript(JavaScript $object, $var = null)
+	{
+		$js = $object->code;
 		if (null !== $var) {
 			$js = "var $var = $js;\n";
 		}
