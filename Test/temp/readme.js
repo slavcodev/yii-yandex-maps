@@ -1,23 +1,19 @@
-$yellowUrl = Yii::app()->baseUrl . '/images/road-point-yellow.png';
-$maroonUrl = Yii::app()->baseUrl . '/images/road-point-maroon.png';
-$redUrl = Yii::app()->baseUrl . '/images/road-point-red.png';
-$points = (string) new PointCollection(array(
-    'cimislia' => new Point(46.523667899172416, 28.775354613281237),
-    'hincesti' => new Point(46.83368868485617, 28.59408019921875),
-    'hincesti_yaloveni' => new Point(46.91091424381294, 28.692957152343745),
-    'yaloveni' => new Point(46.95794812435353, 28.769861449218745),
-    'codru' => new Point(46.98943757030572, 28.782221068359377),
-    'chisinau' => new Point(47.015742793379644, 28.84127258203123),
+var points = {
+    'cimislia': [46.523667899172416, 28.775354613281237],
+    'hincesti': [46.83368868485617, 28.59408019921875],
+    'hincesti_yaloveni': [46.91091424381294, 28.692957152343745],
+    'yaloveni': [46.95794812435353, 28.769861449218745],
+    'codru': [46.98943757030572, 28.782221068359377],
+    'chisinau': [47.015742793379644, 28.84127258203123],
 
-    'stavceni' => new Point(47.08801496011808, 28.859125365234377),
-    'stavceni_cricova' => new Point(47.11333381323732, 28.85775207421873),
-    'cricova' => new Point(47.14613651785698, 28.833032835937495),
+    'stavceni': [47.08801496011808, 28.859125365234377],
+    'stavceni_cricova': [47.11333381323732, 28.85775207421873],
+    'cricova': [47.14613651785698, 28.833032835937495],
 
-    'straseni' => new Point(47.14894723106607, 28.61605285546874),
-    'cojusna' => new Point(47.09551810558289, 28.69982360742186),
-    'vatra' => new Point(47.077696398335306, 28.72454284570312),
-));
-
+    'straseni': [47.14894723106607, 28.61605285546874],
+    'cojusna': [47.09551810558289, 28.69982360742186],
+    'vatra': [47.077696398335306, 28.72454284570312]
+};
 
 var colors = {
     maroon : '#98202d',
@@ -26,15 +22,17 @@ var colors = {
     yellow : '#ffff00',
     green : '#95d340'
 };
-var points = $points,
-    roads = {
+
+var ymaps = {};
+
+var roads = {
         straseni_vatra: [points.straseni, points.cojusna, points.vatra],
         stavceni_cricova: [points.stavceni, points.stavceni_cricova, points.cricova],
         chisinau_cimislia: [
             points.chisinau,
             points.codru,
             points.yaloveni,
-            points.hincesti_yaloveni,
+            points.hincesti_yaloveni
             //points.hincesti,
             //points.cimislia
         ]
@@ -123,7 +121,7 @@ var myPolyLine = new ymaps.Polyline(
 	{
 		geodesic: true,
 		strokeWidth: 10,
-		strokeColor: '#0000E2',
+		strokeColor: '#0000E2'
 		//strokeOpacity: .5,
 	}
 );
@@ -154,7 +152,7 @@ window.yaMarks.c = new ymaps.Placemark(me, {
  balloonContentBody: 'В студёную зимнюю пору',
  hintContent: 'Зимние происшествия'
  }, {
- iconImageHref: "<?php echo Yii::app()->baseUrl . '/images/road-point-blue.png'; ?>",
+ iconImageHref: "/images/road-point-blue.png",
  iconImageSize: [20, 20],
  iconImageOffset: [-10, -10]
  });

@@ -80,21 +80,28 @@ class Api extends Component
 	{
 		$js = "ymaps.ready(function() {\n";
 
-		foreach ($this->_objects as $id => $object) {
-			$class = get_class($object);
-			$generator = 'generate' . substr($class, strrpos($class, '\\') + 1);
-			if (method_exists($this, $generator)) {
-				$var = is_numeric($id) ? null : $id;
-				$js .= $this->$generator($object, $var)."\n";
-			} else {
-				$js .= JS::encode($object)."\n";
-			}
+		foreach ($this->_objects as $var => $object) {
+			$js .= $this->generateObject($object, $var)."\n";
 		}
 
-		$js.= "});\n";
+		$js .= "});\n";
 
 		$cs = Yii::app()->clientScript;
 		$cs->registerScript(self::SCRIPT_ID, $js, ClientScript::POS_END);
+	}
+
+	public function generateObject($object, $var = null)
+	{
+		$class = get_class($object);
+		$generator = 'generate' . substr($class, strrpos($class, '\\') + 1);
+		if (method_exists($this, $generator)) {
+			$var = is_numeric($var) ? null : $var;
+			$js = $this->$generator($object, $var);
+		} else {
+			$js = JS::encode($object);
+		}
+
+		return $js;
 	}
 
 	public function generateMap(Map $map, $var = null)
@@ -109,10 +116,10 @@ class Api extends Component
 
 			if (count($map->objects) > 0) {
 				foreach ($map->objects as $object) {
-					if ($object instanceof Placemark) {
-						$object = $this->generatePlacemark($object);
+					if (is_object($object)) {
+						$object = $this->generateObject($object);
 					}
-					$js .= "$id.geoObjects.add($object);";
+					$js .= "$id.geoObjects.add($object);\n";
 				}
 			}
 		}
@@ -127,6 +134,20 @@ class Api extends Component
 		$options = JS::encode($object->options);
 
 		$js = "new ymaps.Placemark($geometry, $properties, $options)";
+		if (null !== $var) {
+			$js = "var $var = $js;\n";
+		}
+
+		return $js;
+	}
+
+	public function generatePolyline(Polyline $object, $var = null)
+	{
+		$geometry = JS::encode($object->geometry);
+		$properties = JS::encode($object->properties);
+		$options = JS::encode($object->options);
+
+		$js = "new ymaps.Polyline($geometry, $properties, $options)";
 		if (null !== $var) {
 			$js = "var $var = $js;\n";
 		}

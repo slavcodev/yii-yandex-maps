@@ -5,11 +5,12 @@
 
 namespace YandexMaps\Test;
 
+use YandexMaps\Polyline;
 use Yii,
 	Controller;
 
-use YandexMaps\Map,
-	YandexMaps\Api,
+use YandexMaps\Api,
+	YandexMaps\Map,
 	YandexMaps\Placemark;
 
 /**
@@ -17,6 +18,12 @@ use YandexMaps\Map,
  */
 class DemoController extends Controller
 {
+	/** @var string */
+	public static $componentId = 'yandexMapsApi';
+
+	/**
+	 * Default action.
+	 */
 	public function actionIndex()
 	{
 		$map = new Map('chisinau', array(
@@ -49,14 +56,27 @@ class DemoController extends Controller
 		));
 		$map->addObject($vatra);
 
+		$stavceniToCricova = new Polyline(array(
+			array(47.08801496011808, 28.859125365234377),
+			array(47.11333381323732, 28.85775207421873),
+			array(47.14613651785698, 28.833032835937495),
+		), array(), array(
+			'strokeWidth' => 8,
+			'strokeColor' => '#98202d',
+		));
+		$map->addObject($stavceniToCricova);
+
 		$this->render('index', array(
 				'map' => $map,
 			));
 	}
 
+	/**
+	 * @return Api
+	 */
 	public function getApi()
 	{
-		return Yii::app()->getComponent('yandexMapsApi');
+		return Yii::app()->getComponent(self::$componentId);
 	}
 
 	public function getViewPath()
