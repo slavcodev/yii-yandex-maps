@@ -3,6 +3,27 @@
 * * *
 
 ## Components ##
+```
+
+### YandexMaps\Map ###
+
+Map instance.
+
+__Usage__
+
+```php
+$map = new Map('demo', array(
+		'center' => array('js:ymaps.geolocation.latitude', 'js:ymaps.geolocation.longitude'),
+		'zoom' => 10,
+		// Enable zoom with mouse scroll
+		'behaviors' => array('default', 'scrollZoom'),
+		'type' => "yandex#map",
+	), array(
+		// Permit zoom only fro 9 to 11
+		'minZoom' => 9,
+		'maxZoom' => 11,
+	));
+```
 
 ### YandexMaps\Api ###
 
@@ -17,36 +38,16 @@ Attach component to application (e.g. edit config/main.php):
 		'class' => '\YandexMaps\Api';
 	)
  ),
- ```
-
- Next in controller add your maps to it:
-```php
-Yii::app()->yandexMapsApi->maps['demo'] = $map;
 ```
 
-Finally need render scrips, proposed in controller after render view:
+Important! You need render script in controller after render view,
+proposed in CController::afterRender():
 ```php
-Yii::app()->yandexMapsApi->render();
-```
-
-### YandexMaps\Map ###
-
-Map instance.
-
-__Usage__
-
-```php
-$map = new Map('demo', array(
-		'center' => 'js:[ymaps.geolocation.latitude, ymaps.geolocation.longitude]',
-		'zoom' => 10,
-		// Enable zoom with mouse scroll
-		'behaviors' => array('default', 'scrollZoom'),
-		'type' => "yandex#map",
-	), array(
-		// Permit zoom only fro 9 to 11
-		'minZoom' => 9,
-		'maxZoom' => 11,
-	));
+protected function afterRender($view, &$output)
+{
+	Yii::app()->yandexMapsApi->render();
+	parent::afterRender($view, $output);
+}
 ```
 
 ### YandexMaps\Canvas ###
