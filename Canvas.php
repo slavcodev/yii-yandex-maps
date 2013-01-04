@@ -5,15 +5,20 @@
 
 namespace YandexMaps;
 
-use CException as Exception,
+use Yii,
+	CException as Exception,
 	CWidget as Widget,
 	CHtml as Html;
 
 /**
+ * @property Api $api
  * @property Map $map
  */
 class Canvas extends Widget
 {
+	/** @var string */
+	public static $componentId = 'yandexMapsApi';
+
 	/** @var string */
 	public $tagName = 'div';
 	/** @var array */
@@ -24,6 +29,14 @@ class Canvas extends Widget
 
 	/** @var Map */
 	private $_map;
+
+	/**
+	 * @return Api
+	 */
+	public function getApi()
+	{
+		return Yii::app()->getComponent(self::$componentId);
+	}
 
 	/**
 	 * @return Map
@@ -43,6 +56,7 @@ class Canvas extends Widget
 	public function setMap(Map $map)
 	{
 		$this->_map = $map;
+		$this->api->addObject($map, $map->id);
 	}
 
 	/**
@@ -50,6 +64,7 @@ class Canvas extends Widget
 	 */
 	public function run()
 	{
+		parent::run();
 		$this->htmlOptions['id'] = $this->map->id;
 		echo Html::tag($this->tagName, $this->htmlOptions, '');
 	}

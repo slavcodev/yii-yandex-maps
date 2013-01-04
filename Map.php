@@ -10,6 +10,7 @@ use CException as Exception,
 
 /**
  * @property string $id
+ * @property array $objects
  */
 class Map extends Component
 {
@@ -20,6 +21,9 @@ class Map extends Component
 
 	/** @var string */
 	private $_id;
+
+	/** @var Placemark[] */
+	private $_objects = array();
 
 	/**
 	 * @param string $id
@@ -59,5 +63,23 @@ class Map extends Component
 	public function setId($id)
 	{
 		$this->_id = (string) $id;
+	}
+
+	public function getObjects()
+	{
+		return $this->_objects;
+	}
+
+	public function setObjects(array $objects = array())
+	{
+		$this->_objects = array();
+		foreach ($objects as $object) {
+			$this->addObject($object);
+		}
+	}
+
+	public function addObject($object)
+	{
+		$this->_objects[] = $object;
 	}
 }

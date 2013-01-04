@@ -12,8 +12,6 @@ use Yii,
 
 /**
  * Yandex Maps API component.
- *
- *
  */
 class Api extends Component
 {
@@ -26,8 +24,23 @@ class Api extends Component
 	/** @var array */
 	public $packages = array('package.full');
 
-	/** @var Map[] */
-	public $maps = array();
+	/** @var array */
+	private $_objects = array();
+
+	/**
+	 * @param mixed $key
+	 * @param mixed $object
+	 * @return $this
+	 */
+	public function addObject($object, $key = null)
+	{
+		if (null === $key) {
+			$this->_objects[] = $object;
+		} else {
+			$this->_objects[$key] = $object;
+		}
+		return $this;
+	}
 
 	/**
 	 * Render client scripts.
@@ -67,9 +80,15 @@ class Api extends Component
 	{
 		$js = "ymaps.ready(function() {\n";
 
-		// Maps
-		foreach ($this->maps as $map) {
-			$js .= $this->renderMap($map);
+		foreach ($this->_objects as $id => $object) {
+			$class = get_class($object);
+			$generator = 'generate' . substr($class, strrpos($class, '\\') + 1);
+			if (method_exists($this, $generator)) {
+				$var = is_numeric($id) ? null : $id;
+				$js .= $this->$generator($object, $var)."\n";
+			} else {
+				$js .= JS::encode($object)."\n";
+			}
 		}
 
 		$js.= "});\n";
@@ -78,12 +97,40 @@ class Api extends Component
 		$cs->registerScript(self::SCRIPT_ID, $js, ClientScript::POS_END);
 	}
 
-	public function renderMap(Map $map)
+	public function generateMap(Map $map, $var = null)
 	{
 		$id = $map->id;
 		$state = JS::encode($map->state);
 		$options = JS::encode($map->options);
 
-		return "var $id = new ymaps.Map('$id', $state, $options);\n";
+		$js = "new ymaps.Map('$id', $state, $options)";
+		if (null !== $var) {
+			$js = "var $var = $js;\n";
+
+			if (count($map->objects) > 0) {
+				foreach ($map->objects as $object) {
+					if ($object instanceof Placemark) {
+						$object = $this->generatePlacemark($object);
+					}
+					$js .= "$id.geoObjects.add($object);";
+				}
+			}
+		}
+
+		return $js;
+	}
+
+	public function generatePlacemark(Placemark $object, $var = null)
+	{
+		$geometry = JS::encode($object->geometry);
+		$properties = JS::encode($object->properties);
+		$options = JS::encode($object->options);
+
+		$js = "new ymaps.Placemark($geometry, $properties, $options)";
+		if (null !== $var) {
+			$js = "var $var = $js;\n";
+		}
+
+		return $js;
 	}
 }
