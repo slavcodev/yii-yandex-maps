@@ -1,15 +1,13 @@
-Yandex Maps Components
-======================
+# Yandex Maps Components #
+==========================
 
-Components:
------------
+## Components ##
 
-YandexMaps\Api
-**************
+`YandexMaps\Api`
 
 Application components which register scripts.
 
-***Usage***
+__Usage__
 
 Attach component to application (e.g. edit config/main.php):
 ```php
@@ -30,12 +28,11 @@ Finally need render scrips, proposed in controller after render view:
 Yii::app()->yandexMapsApi->render();
 ```
 
-YandexMaps\Map
-**************
+`YandexMaps\Map`
 
 Map instance.
 
-***Usage***
+__Usage__
 
 ```php
 $map = new Map('demo', array(
@@ -51,12 +48,11 @@ $map = new Map('demo', array(
 	));
 ```
 
-YandexMaps\Canvas
-*****************
+`YandexMaps\Canvas`
 
 This is widget which render html tag for your map.
 
-***Usage***
+__Usage__
 
 Simple add widget to view:
 ```php
