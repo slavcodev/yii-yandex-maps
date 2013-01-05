@@ -28,8 +28,8 @@ class DemoController extends Controller
 	public function actionIndex()
 	{
 		$map = new Map('chisinau', array(
-			'center' => 'js:[ymaps.geolocation.latitude, ymaps.geolocation.longitude]',
-			'zoom' => 10,
+			'center' => array(55.7595, 37.6249),
+			'zoom' => 12,
 			'behaviors' => array(
 				Map::BEHAVIOR_DEFAULT,
 				// Map::BEHAVIOR_SCROLL_ZOOM
@@ -37,9 +37,10 @@ class DemoController extends Controller
 			'type' => "yandex#map",
 		), array(
 			'minZoom' => 9,
-			'maxZoom' => 11,
+			'maxZoom' => 12,
 			'controls' => array(
 				Map::CONTROL_MAP_TOOLS,
+				Map::CONTROL_SMALL_ZOOM,
 			),
 			'events' => array(
 				'dblclick' => 'js:function (e) {e.preventDefault();}',
@@ -67,7 +68,7 @@ class DemoController extends Controller
 		$map->addObject('me');
 
 		// Private placemark
-		$vatra = new Placemark(array(47.077696398335306, 28.72454284570312), array(), array(
+		$vatra = new Placemark(array(55.7595, 37.6249), array(), array(
 			'iconImageHref' => Yii::app()->baseUrl . '/images/road-point-red.png',
 			'iconImageSize' => array(16, 16),
 			'iconImageOffset' => 8,
@@ -76,14 +77,12 @@ class DemoController extends Controller
 
 		// Polyline example
 		$stavceniToCricova = new Polyline(array(
-			array(47.08801496011808, 28.859125365234377),
-			array(47.11333381323732, 28.85775207421873),
-			array(47.14613651785698, 28.833032835937495),
+			array(55.7852, 37.5661),
+			array(55.7699, 37.5961),
+			array(55.7595, 37.5844),
 		), array(
-			'balloonContentHeader' => 'js:ymaps.geolocation.country',
-			'balloonContent' => 'Дорога: Страшень - Крикова',
-			//'balloonContentFooter' => 'js:ymaps.geolocation.region',
-			//'balloonContentBody' => 'Балун оисание',
+			'balloonContentHeader' => 'js:"Вы в " + ymaps.geolocation.country',
+			'balloonContent' => 'А это Ленинградский проспект',
 			'hintContent' => 'Куку я всплывающая подсказка',
 		), array(
 			'geodesic' => true,
