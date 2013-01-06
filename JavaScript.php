@@ -26,6 +26,14 @@ class JavaScript extends Component
 	/**
 	 * @return string
 	 */
+	function __toString()
+	{
+		return $this->getCode();
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getCode()
 	{
 		return $this->_code;

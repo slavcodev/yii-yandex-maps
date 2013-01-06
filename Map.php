@@ -5,14 +5,13 @@
 
 namespace YandexMaps;
 
-use CException as Exception,
-	CComponent as Component;
+use CException as Exception;
 
 /**
  * @property string $id
  * @property array $objects
  */
-class Map extends Component
+class Map extends JavaScript
 {
 	const CONTROL_MAP_TOOLS = 'mapTools';
 	const CONTROL_MINI_MAP = 'miniMap';
@@ -55,7 +54,7 @@ class Map extends Component
 	 */
 	public function __construct($id = 'myMap', array $state = array(), array $options = array())
 	{
-		$this->_id = $id;
+		$this->setId($id);
 		$this->state = $state;
 		if (isset($options['controls'])) {
 			$this->controls = $options['controls'];
@@ -74,6 +73,15 @@ class Map extends Component
 	function __clone()
 	{
 		$this->id = null;
+	}
+
+	/**
+	 * @param string $code
+	 * @throws Exception
+	 */
+	final public function setCode($code)
+	{
+		throw new Exception('Cannot change code directly.');
 	}
 
 	/**
