@@ -15,9 +15,6 @@ var points = {
     'vatra': [47.077696398335306, 28.72454284570312]
 };
 
-var colors = {
-};
-
 var ymaps = {};
 
 var roads = {
