@@ -4,6 +4,17 @@
 
 ## Components ##
 
+- [`YandexMaps\Api`](https://github.com/slavcodev/yii-yandex-maps#yandexmapsapi)
+- [`YandexMaps\Map`](https://github.com/slavcodev/yii-yandex-maps#yandexmapsmap)
+- [`YandexMaps\Canvas`](https://github.com/slavcodev/yii-yandex-maps#yandexmapscanvas)
+- `YandexMaps\JavaScript`
+- `YandexMaps\Placemark`
+- `YandexMaps\Polyline`
+- TODO: [Geo XML](http://api.yandex.ru/maps/doc/jsapi/2.x/dg/concepts/geoxml.xml)
+- TODO: [GeoObject](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/GeoObject.xml)
+- TODO: [Balloon](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/Balloon.xml)
+- TODO: [Hint](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/Hint.xml)
+
 ### YandexMaps\Api ###
 
 Application components which register scripts.
@@ -67,10 +78,3 @@ $this->widget('\YandexMaps\Canvas', array(
 ```
 
 *more example you can found in folder `Test`*
-
-## Components ##
-
-- [Geo XML](http://api.yandex.ru/maps/doc/jsapi/2.x/dg/concepts/geoxml.xml)
-- [GeoObject](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/GeoObject.xml)
-- [Balloon](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/Balloon.xml)
-- [Hint](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/Hint.xml)
