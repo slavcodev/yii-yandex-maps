@@ -37,7 +37,7 @@ class GeoObjectCollection extends GeoObject implements Interfaces\GeoObjectColle
 	/**
 	 * @param Interfaces\GeoObject $object
 	 */
-	public function addObject(Interfaces\GeoObject $object)
+	public function addObject($object)
 	{
 		$this->_objects[] = $object;
 	}

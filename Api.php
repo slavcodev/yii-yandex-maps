@@ -53,6 +53,11 @@ class Api extends Component
 		$this->registerScript();
 	}
 
+	protected function encodeArray($array)
+	{
+		return count($array) > 0 ? JS::encode($array) : '{}';
+	}
+
 	/**
 	 * @todo Add another API params
 	 * @see http://api.yandex.ru/maps/doc/jsapi/2.x/dg/concepts/load.xml
@@ -83,11 +88,7 @@ class Api extends Component
 		$js = "ymaps.ready(function() {\n";
 
 		foreach ($this->_objects as $var => $object) {
-			if ($object instanceof Interfaces\GeoObjectCollection) {
-				$js .= $this->generateObjectCollection($object, $var)."\n";
-			} else {
-				$js .= $this->generateObject($object, $var)."\n";
-			}
+			$js .= $this->generateObject($object, $var)."\n";
 		}
 
 		$js .= "});\n";
@@ -110,24 +111,23 @@ class Api extends Component
 		return $js;
 	}
 
-	public function generateObjectCollection($object, $var = null)
+	public function generateGeoObjectCollection(GeoObjectCollection $object, $var = null)
 	{
-		$class = get_class($object);
-		$generator = 'generate' . substr($class, strrpos($class, '\\') + 1);
-		if (method_exists($this, $generator)) {
-			$var = is_numeric($var) ? null : $var;
-			$js = $this->$generator($object, $var);
+		$properties = $this->encodeArray($object->properties);
+		$options = $this->encodeArray($object->options);
+
+		$js = "new ymaps.GeoObjectCollection($properties, $options)";
+		if (null !== $var) {
+			$js = "var $var = $js;\n";
 
 			if (count($object->objects) > 0) {
 				foreach ($object->objects as $object) {
 					if (is_object($object)) {
 						$object = $this->generateObject($object);
 					}
-					$js .= "$var.geoObjects.add($object);\n";
+					$js .= "$var.add($object);\n";
 				}
 			}
-		} else {
-			$js = JS::encode($object);
 		}
 
 		return $js;
@@ -136,12 +136,21 @@ class Api extends Component
 	public function generateMap(Map $map, $var = null)
 	{
 		$id = $map->id;
-		$state = JS::encode($map->state);
-		$options = JS::encode($map->options);
+		$state = $this->encodeArray($map->state);
+		$options = $this->encodeArray($map->options);
 
 		$js = "new ymaps.Map('$id', $state, $options)";
 		if (null !== $var) {
 			$js = "var $var = $js;\n";
+
+			if (count($map->objects) > 0) {
+				foreach ($map->objects as $object) {
+					if (is_object($object)) {
+						$object = $this->generateObject($object);
+					}
+					$js .= "$var.geoObjects.add($object);\n";
+				}
+			}
 
 			if (count($map->controls) > 0) {
 				// TODO: Add controls array.
@@ -170,8 +179,8 @@ class Api extends Component
 	public function generatePlacemark(Placemark $object, $var = null)
 	{
 		$geometry = JS::encode($object->geometry);
-		$properties = JS::encode($object->properties);
-		$options = JS::encode($object->options);
+		$properties = $this->encodeArray($object->properties);
+		$options = $this->encodeArray($object->options);
 
 		$js = "new ymaps.Placemark($geometry, $properties, $options)";
 		if (null !== $var) {
@@ -184,8 +193,8 @@ class Api extends Component
 	public function generatePolyline(Polyline $object, $var = null)
 	{
 		$geometry = JS::encode($object->geometry);
-		$properties = JS::encode($object->properties);
-		$options = JS::encode($object->options);
+		$properties = $this->encodeArray($object->properties);
+		$options = $this->encodeArray($object->options);
 
 		$js = "new ymaps.Polyline($geometry, $properties, $options)";
 		if (null !== $var) {

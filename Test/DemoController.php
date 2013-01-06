@@ -5,6 +5,7 @@
 
 namespace YandexMaps\Test;
 
+use YandexMaps\GeoObjectCollection;
 use Yii,
 	Controller;
 
@@ -59,7 +60,6 @@ class DemoController extends Controller
 
 		// Create map
 		$map = $this->createMap();
-		$this->api->addObject($map, $map->id);
 
 		// Add global placemark to map
 		$map->addObject('me');
@@ -69,17 +69,17 @@ class DemoController extends Controller
 		$redUrl = Yii::app()->baseUrl . '/images/road-point-red.png';
 		$blueUrl = Yii::app()->baseUrl . '/images/road-point-blue.png';
 		$yellowUrl = Yii::app()->baseUrl . '/images/road-point-yellow.png';
-		$greenUrl = Yii::app()->baseUrl . '/images/road-point-green.png';
-		$map->addObject($this->createPlacemarkByPosition(array(55.7595, 37.6249), 'Центр Москвы', $redUrl));
-		$map->addObject($this->createPlacemarkByPosition(array(55.7695, 37.6449), 'Казанский вокзал', $yellowUrl));
-		$map->addObject($this->createPlacemarkByPosition(array(55.7525, 37.5845), 'Арбат', $blueUrl));
+		// $greenUrl = Yii::app()->baseUrl . '/images/road-point-green.png';
+		$map->addObject($this->createDefaultPlacemark(array(55.7595, 37.6249), 'Центр Москвы', $redUrl));
+		$map->addObject($this->createDefaultPlacemark(array(55.7695, 37.6449), 'Казанский вокзал', $yellowUrl));
+		$map->addObject($this->createDefaultPlacemark(array(55.7525, 37.5845), 'Арбат', $blueUrl));
 
 		// Polyline example
 		$maroon = '#98202d';
-		$red = '#ff0000';
-		$blue =  '#0000E2';
+		// $red = '#ff0000';
+		// $blue =  '#0000E2';
 		$yellow = '#ffff00';
-		$green = '#95d340';
+		// $green = '#95d340';
 		$map->addObject($this->createPolyline(array(
 					array(55.7852, 37.5661),
 					array(55.7699, 37.5961),
@@ -95,10 +95,21 @@ class DemoController extends Controller
 					array(55.7320, 37.6400),
 				), 'Кольцевая', $yellow));
 
+		// Create collection.
+		$collection = $this->createPlacemarkCollection(array(
+				$this->createPlacemarkByPosition(array(55.7655, 37.6549), 'Test'),
+				$this->createPlacemarkByPosition(array(55.7415, 37.6535), 'Test'),
+			), $maroonUrl);
+		$this->api->addObject($collection, 'points');
+		$map->addObject('points');
+
 		// Simple JS code example
 		// $this->api->addObject($this->createBoundsScript($map->id));
 		// $this->api->addObject($this->createCopyright($map->id));
 		// $this->api->addObject($this->createBalloonOpen('me'));
+
+		// Register map in API.
+		$this->api->addObject($map, $map->id);
 
 		// Render map canvas
 		$this->render('index', array(
@@ -224,7 +235,7 @@ JS
 		));
 	}
 
-	protected function createPlacemarkByPosition(array $position, $title, $image)
+	protected function createDefaultPlacemark(array $position, $title, $image)
 	{
 		return new Placemark($position, array(
 			'balloonContentHeader' => $title,
@@ -234,6 +245,16 @@ JS
 		), array(
 			'iconImageHref' => $image,
 			'preset' => 'my#defaultsPit',
+		));
+	}
+
+	protected function createPlacemarkByPosition(array $position, $title)
+	{
+		return new Placemark($position, array(
+			'balloonContentHeader' => $title,
+			'hintContent' => $title,
+			'createTime' => date('Y-m-d'),
+			'votes' => rand(0, 20),
 		));
 	}
 
@@ -248,5 +269,15 @@ JS
 			'strokeColor' => $color,
 			'preset' => 'my#defaultsRoad',
 		));
+	}
+
+	protected function createPlacemarkCollection(array $objects, $image)
+	{
+		$collection = new GeoObjectCollection(array(), array(
+			'iconImageHref' => $image,
+			'preset' => 'my#defaultsPit',
+		));
+		$collection->setObjects($objects);
+		return $collection;
 	}
 }
