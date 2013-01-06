@@ -103,7 +103,7 @@ class Api extends Component
 		$generator = 'generate' . substr($class, strrpos($class, '\\') + 1);
 		if (method_exists($this, $generator)) {
 			$var = is_numeric($var) ? null : $var;
-			$js = $this->$generator($object, $var);
+			$js = $this->$generator($object, $var)."\n";
 		} else {
 			$js = JS::encode($object);
 		}
