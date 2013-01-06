@@ -5,31 +5,28 @@
 
 namespace YandexMaps;
 
+use YandexMaps\Interfaces;
+
 use CException as Exception;
 
 /**
- * @property array $geometry
- * @property array $properties
+ * @property array $feature
  * @property array $options
  */
-class GeoObject extends JavaScript
+class GeoObject extends JavaScript implements Interfaces\GeoObject
 {
 	/** @var array */
-	private $_geometry;
+	private $_feature;
 	/** @var array */
-	private $_properties = array();
-	/** @var array */
-	public $_options = array();
+	private $_options = array();
 
 	/**
-	 * @param array $geometry
-	 * @param array $properties
+	 * @param array $feature
 	 * @param array $options
 	 */
-	public function __construct(array $geometry, array $properties = array(), array $options = array())
+	public function __construct(array $feature, array $options = array())
 	{
-		$this->setGeometry($geometry);
-		$this->setProperties($properties);
+		$this->setFeature($feature);
 		$this->setOptions($options);
 	}
 
@@ -46,20 +43,20 @@ class GeoObject extends JavaScript
 	 * @return array
 	 * @throws Exception
 	 */
-	public function getGeometry()
+	public function getFeature()
 	{
-		if (empty($this->_geometry)) {
+		if (empty($this->_feature)) {
 			throw new Exception('Empty placemark geometry.');
 		}
-		return $this->_geometry;
+		return $this->_feature;
 	}
 
 	/**
-	 * @param array $geometry
+	 * @param array $feature
 	 */
-	public function setGeometry(array $geometry)
+	public function setFeature(array $feature)
 	{
-		$this->_geometry = $geometry;
+		$this->_feature = $feature;
 	}
 
 	/**
@@ -81,9 +78,25 @@ class GeoObject extends JavaScript
 	/**
 	 * @return array
 	 */
+	public function getGeometry()
+	{
+		return isset($this->_feature['geometry']) ? $this->_feature['geometry'] : array();
+	}
+
+	/**
+	 * @param array $geometry
+	 */
+	public function setGeometry(array $geometry)
+	{
+		$this->_feature['coordinates'] = $geometry;
+	}
+
+	/**
+	 * @return array
+	 */
 	public function getProperties()
 	{
-		return $this->_properties;
+		return isset($this->_feature['properties']) ? $this->_feature['properties'] : array();
 	}
 
 	/**
@@ -91,6 +104,6 @@ class GeoObject extends JavaScript
 	 */
 	public function setProperties(array $properties)
 	{
-		$this->_properties = $properties;
+		$this->_feature['properties'] = $properties;
 	}
 }

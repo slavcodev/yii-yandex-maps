@@ -5,6 +5,8 @@
 
 namespace YandexMaps;
 
+use YandexMaps\Interfaces;
+
 use CException as Exception;
 
 /**
@@ -124,9 +126,9 @@ class Map extends JavaScript
 	}
 
 	/**
-	 * @param mixed $object
+	 * @param Interfaces\GeoObject $object
 	 */
-	public function addObject($object)
+	public function addObject(Interfaces\GeoObject $object)
 	{
 		$this->_objects[] = $object;
 	}

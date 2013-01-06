@@ -17,10 +17,25 @@ class Placemark extends GeoObject
 	 */
 	public function __construct(array $geometry, array $properties = array(), array $options = array())
 	{
-		$geometry = array(
-			'type' => "Point",
-			'coordinates' => $geometry,
+		$feature = array(
+			'geometry' => array(
+				'type' => "Point",
+				'coordinates' => $geometry,
+			),
+			'properties' => $properties,
 		);
-		parent::__construct($geometry, $properties, $options);
+		parent::__construct($feature, $options);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getGeometry()
+	{
+		$geometry = parent::getGeometry();
+		if (isset($geometry['coordinates'])) {
+			$geometry = $geometry['coordinates'];
+		}
+		return $geometry;
 	}
 }
