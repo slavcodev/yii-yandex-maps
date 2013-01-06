@@ -35,4 +35,24 @@ interface GeoObject
 	 * @param array $options
 	 */
 	public function setOptions(array $options);
+
+	/**
+	 * @return array
+	 */
+	public function getGeometry();
+
+	/**
+	 * @param array $geometry
+	 */
+	public function setGeometry(array $geometry);
+
+	/**
+	 * @return array
+	 */
+	public function getProperties();
+
+	/**
+	 * @param array $properties
+	 */
+	public function setProperties(array $properties);
 }

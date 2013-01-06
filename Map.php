@@ -13,7 +13,7 @@ use CException as Exception;
  * @property string $id
  * @property array $objects
  */
-class Map extends JavaScript
+class Map extends JavaScript implements Interfaces\GeoObjectCollection
 {
 	const CONTROL_MAP_TOOLS = 'mapTools';
 	const CONTROL_MINI_MAP = 'miniMap';
@@ -126,9 +126,9 @@ class Map extends JavaScript
 	}
 
 	/**
-	 * @param Interfaces\GeoObject $object
+	 * @param mixed $object
 	 */
-	public function addObject(Interfaces\GeoObject $object)
+	public function addObject($object)
 	{
 		$this->_objects[] = $object;
 	}

@@ -5,6 +5,8 @@
 
 namespace YandexMaps;
 
+use YandexMaps\Interfaces;
+
 use Yii,
 	CApplicationComponent as Component,
 	CClientScript as ClientScript,
@@ -81,7 +83,11 @@ class Api extends Component
 		$js = "ymaps.ready(function() {\n";
 
 		foreach ($this->_objects as $var => $object) {
-			$js .= $this->generateObject($object, $var)."\n";
+			if ($object instanceof Interfaces\GeoObjectCollection) {
+				$js .= $this->generateObjectCollection($object, $var)."\n";
+			} else {
+				$js .= $this->generateObject($object, $var)."\n";
+			}
 		}
 
 		$js .= "});\n";
@@ -104,6 +110,29 @@ class Api extends Component
 		return $js;
 	}
 
+	public function generateObjectCollection($object, $var = null)
+	{
+		$class = get_class($object);
+		$generator = 'generate' . substr($class, strrpos($class, '\\') + 1);
+		if (method_exists($this, $generator)) {
+			$var = is_numeric($var) ? null : $var;
+			$js = $this->$generator($object, $var);
+
+			if (count($object->objects) > 0) {
+				foreach ($object->objects as $object) {
+					if (is_object($object)) {
+						$object = $this->generateObject($object);
+					}
+					$js .= "$var.geoObjects.add($object);\n";
+				}
+			}
+		} else {
+			$js = JS::encode($object);
+		}
+
+		return $js;
+	}
+
 	public function generateMap(Map $map, $var = null)
 	{
 		$id = $map->id;
@@ -113,15 +142,6 @@ class Api extends Component
 		$js = "new ymaps.Map('$id', $state, $options)";
 		if (null !== $var) {
 			$js = "var $var = $js;\n";
-
-			if (count($map->objects) > 0) {
-				foreach ($map->objects as $object) {
-					if (is_object($object)) {
-						$object = $this->generateObject($object);
-					}
-					$js .= "$id.geoObjects.add($object);\n";
-				}
-			}
 
 			if (count($map->controls) > 0) {
 				// TODO: Add controls array.

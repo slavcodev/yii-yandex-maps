@@ -1,0 +1,44 @@
+<?php
+/**
+ * \YandexMaps\GeoObjectCollection class file.
+ */
+
+namespace YandexMaps;
+
+use YandexMaps\Interfaces;
+
+/**
+ * Objects collection.
+ */
+class GeoObjectCollection extends GeoObject implements Interfaces\GeoObjectCollection
+{
+	/** @var array */
+	private $_objects = array();
+
+	/**
+	 * @return array
+	 */
+	public function getObjects()
+	{
+		return $this->_objects;
+	}
+
+	/**
+	 * @param array $objects
+	 */
+	public function setObjects(array $objects = array())
+	{
+		$this->_objects = array();
+		foreach ($objects as $object) {
+			$this->addObject($object);
+		}
+	}
+
+	/**
+	 * @param Interfaces\GeoObject $object
+	 */
+	public function addObject(Interfaces\GeoObject $object)
+	{
+		$this->_objects[] = $object;
+	}
+}
