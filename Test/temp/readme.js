@@ -16,11 +16,6 @@ var points = {
 };
 
 var colors = {
-    maroon : '#98202d',
-    red : '#ff0000',
-    blue :  '#0000E2',
-    yellow : '#ffff00',
-    green : '#95d340'
 };
 
 var ymaps = {};
@@ -263,3 +258,87 @@ myMap.events.add('click', function (e) {
 myMap.events.add('contextmenu', function (e) {
     myMap.hint.show(e.get('coordPosition'), 'Кто-то щелкнул правой кнопкой');
 });
+
+
+ym.ready(function() {
+    var layerOSM = function() {
+        return new ym.Layer('http://otile%d.mqcdn.com/tiles/1.0.0/osm/%z/%x/%y.png', {
+            projection: ym.projection.sphericalMercator
+        });
+    };
+    var osMap = new ym.MapType('OSMap', [layerOSM]);
+    ym.mapType.storage.add('openstreet#map', osMap);
+
+    var layerGoogle = function() {
+        return new ym.Layer('http://mt0.google.com/vt/lyrs=m@176000000&hl=ru&%c', {
+            projection: ym.projection.sphericalMercator
+        });
+    };
+    var googleMap = new ym.MapType('GoogleMap', [layerGoogle]);
+    ym.mapType.storage.add('google#map', googleMap);
+
+    var layerMail = function() {
+        return new ym.Layer('http://t0maps.mail.ru/tiles/scheme/%z/%y/%x.png', {
+            projection: ym.projection.sphericalMercator
+        });
+    };
+    var mailMap = new ym.MapType('MailMap', [layerMail]);
+    ym.mapType.storage.add('mail#map', mailMap);
+
+    var map = new ym.Map('map', {
+        center: [55.74, 37.62],
+        zoom: 9
+    }, {});
+
+    var yandexSelectorItem = new ym.control.ListBoxItem({
+        data: {
+            content: "Яндекс.Схема"
+        }
+    });
+    yandexSelectorItem.events.add("click", function(e) {
+        this.setType("yandex#map");
+    }, map);
+
+    var osmSelectorItem = new ym.control.ListBoxItem({
+        data: {
+            content: "Open Street Map"
+        }
+    });
+    osmSelectorItem.events.add("click", function(e) {
+        this.setType("openstreet#map");
+    }, map);
+
+    var googleSelectorItem = new ym.control.ListBoxItem({
+        data: {
+            content: "Google.Схема"
+        }
+    });
+    googleSelectorItem.events.add("click", function(e) {
+        this.setType("google#map");
+    }, map);
+
+    var mailSelectorItem = new ym.control.ListBoxItem({
+        data: {
+            content: "Mail.Схема"
+        }
+    });
+    mailSelectorItem.events.add("click", function(e) {
+        this.setType("mail#map");
+    }, map);
+
+    var typeSelector = new ym.control.ListBox({
+        data: {
+            title: "Показать"
+        },
+        items: [yandexSelectorItem, osmSelectorItem, googleSelectorItem, mailSelectorItem]
+    });
+
+    map.controls.add(typeSelector, {
+        right: 5,
+        top: 5
+    });
+    map.controls.add("zoomControl", {
+        left: 5,
+        top: 5
+    });
+})
