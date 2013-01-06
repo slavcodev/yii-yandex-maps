@@ -1,8 +1,8 @@
-# Yandex Maps Components #
+## Yandex Maps Components ##
 
 * * *
 
-## Components ##
+### Components ###
 
 - [`YandexMaps\Api`](https://github.com/slavcodev/yii-yandex-maps#yandexmapsapi)
 - [`YandexMaps\Map`](https://github.com/slavcodev/yii-yandex-maps#yandexmapsmap)
@@ -15,7 +15,7 @@
 - TODO: [Balloon](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/Balloon.xml)
 - TODO: [Hint](http://api.yandex.ru/maps/doc/jsapi/2.x-stable/ref/reference/Hint.xml)
 
-### YandexMaps\Api ###
+#### YandexMaps\Api ####
 
 Application components which register scripts.
 
@@ -40,7 +40,7 @@ protected function afterRender($view, &$output)
 }
 ```
 
-### YandexMaps\Map ###
+#### YandexMaps\Map ####
 
 Map instance.
 
@@ -60,7 +60,7 @@ $map = new Map('demo', array(
 	));
 ```
 
-### YandexMaps\Canvas ###
+#### YandexMaps\Canvas ####
 
 This is widget which render html tag for your map.
 
