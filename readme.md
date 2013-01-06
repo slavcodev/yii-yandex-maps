@@ -77,4 +77,4 @@ $this->widget('\YandexMaps\Canvas', array(
 	));
 ```
 
-*more example you can found in folder `Test`*
+*more example you can found in [Test](https://github.com/slavcodev/yii-yandex-maps/blob/master/Test/DemoController.php) folder*

@@ -71,7 +71,7 @@ class DemoController extends Controller
 		$yellowUrl = Yii::app()->baseUrl . '/images/road-point-yellow.png';
 		$greenUrl = Yii::app()->baseUrl . '/images/road-point-green.png';
 		$map->addObject($this->createPlacemarkByPosition(array(55.7595, 37.6249), 'Центр Москвы', $redUrl));
-		$map->addObject($this->createPlacemarkByPosition(array(55.7695, 37.6449), 'Казанский вокзал', $greenUrl));
+		$map->addObject($this->createPlacemarkByPosition(array(55.7695, 37.6449), 'Казанский вокзал', $yellowUrl));
 		$map->addObject($this->createPlacemarkByPosition(array(55.7525, 37.5845), 'Арбат', $blueUrl));
 
 		// Polyline example
@@ -111,6 +111,18 @@ class DemoController extends Controller
 	 */
 	protected function createMap()
 	{
+		$image = Yii::app()->baseUrl . '/images/road-point-green.png';
+		$click = <<<JS
+var coord = e.get("coordPosition");
+var map = e.get("target"); // Получение ссылки на объект, сгенерировавший событие (карта)
+map.geoObjects.add(new ymaps.Placemark(coord, {
+		balloonContentHeader: coord,
+		hintContent: coord
+	}, {
+	iconImageHref: '$image',
+	preset: 'my#defaultsPit'
+}));
+JS;
 		return new Map('chisinau', array(
 			'center' => array(55.7595, 37.6249),
 			'zoom' => 12,
@@ -128,12 +140,7 @@ class DemoController extends Controller
 			),
 			'events' => array(
 				'dblclick' => 'js:function (e) {e.preventDefault();}',
-				// 'click' => 'js:function (e) {
-				//	var coords = e.get("coordPosition");
-				//	var eMap = e.get("target"); // Получение ссылки на объект, сгенерировавший событие (карта)
-				//	eMap.geoObjects.add(new ymaps.Placemark(coords));
-				//	// alert(coords);
-				// }',
+				'click' => "js:function(e) {\n" . $click . "\n}\n",
 			),
 		));
 	}
