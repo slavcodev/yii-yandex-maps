@@ -103,7 +103,7 @@ class Api extends Component
 		$generator = 'generate' . substr($class, strrpos($class, '\\') + 1);
 		if (method_exists($this, $generator)) {
 			$var = is_numeric($var) ? null : $var;
-			$js = $this->$generator($object, $var)."\n";
+			$js = $this->$generator($object, $var);
 		} else {
 			$js = JS::encode($object);
 		}
@@ -144,32 +144,37 @@ class Api extends Component
 			$js = "var $var = $js;\n";
 
 			if (count($map->objects) > 0) {
+				$objects = "\n$var.geoObjects";
 				foreach ($map->objects as $object) {
 					if (is_object($object)) {
 						$object = $this->generateObject($object);
 					}
-					$js .= "$var.geoObjects.add($object);\n";
+					$objects .= "\n\t.add($object)";
 				}
+				$js .= "$objects;\n";
 			}
 
 			if (count($map->controls) > 0) {
-				// TODO: Add controls array.
+				$controls = "\n$id.controls";
 				foreach ($map->controls as $control) {
-					// TODO: Add control object.
-					if (is_object($control)) {
-						$control = $this->generateObject($control);
+					if (count($control) > 1) {
+						$config = $this->encodeArray($control[1]);
+						$controls .= "\n\t.add('$control[0]', $config)";
+					} else {
+						$controls .= "\n\t.add('$control[0]')";
 					}
-					// TODO: Add control options, e.g. add("smallZoomControl", {left: '5px', top: '5px'})
-					$js .= "$id.controls.add('$control');\n";
 				}
+				$js .= "$controls;\n";
 			}
 
 			if (count($map->events) > 0) {
+				$events = "\n$id.events";
 				foreach ($map->events as $event => $handle) {
 					$event = JS::encode($event);
 					$handle = JS::encode($handle);
-					$js .= "$id.events.add($event, $handle);\n";
+					$events .= "\n\t.add($event, $handle)";
 				}
+				$js .= "$events;\n";
 			}
 		}
 

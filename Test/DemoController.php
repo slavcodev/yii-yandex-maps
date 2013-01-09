@@ -124,17 +124,17 @@ class DemoController extends Controller
 	{
 		$image = Yii::app()->baseUrl . '/images/road-point-green.png';
 		$click = <<<JS
-var coord = e.get("coordPosition");
-var map = e.get("target"); // Получение ссылки на объект, сгенерировавший событие (карта)
-map.geoObjects.add(new ymaps.Placemark(coord, {
-		balloonContentHeader: coord,
-		hintContent: coord
-	}, {
-	iconImageHref: '$image',
-	preset: 'my#defaultsPit'
-}));
+		var coord = e.get("coordPosition");
+		var map = e.get("target"); // Получение ссылки на объект, сгенерировавший событие (карта)
+		map.geoObjects.add(new ymaps.Placemark(coord, {
+				balloonContentHeader: coord,
+				hintContent: coord
+			}, {
+			iconImageHref: '$image',
+			preset: 'my#defaultsPit'
+		}));
 JS;
-		return new Map('chisinau', array(
+		return new Map('map', array(
 			'center' => array(55.7595, 37.6249),
 			'zoom' => 12,
 			'behaviors' => array(
@@ -147,11 +147,13 @@ JS;
 			'maxZoom' => 12,
 			'controls' => array(
 				Map::CONTROL_MAP_TOOLS,
-				Map::CONTROL_SMALL_ZOOM,
+				array(Map::CONTROL_SMALL_ZOOM, array(
+					'bottom' => '5px',
+				)),
 			),
 			'events' => array(
 				'dblclick' => 'js:function (e) {e.preventDefault();}',
-				'click' => "js:function(e) {\n" . $click . "\n}\n",
+				'click' => "js:function(e) {\n" . $click . "}",
 			),
 		));
 	}

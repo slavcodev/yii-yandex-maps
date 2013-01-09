@@ -12,6 +12,8 @@ use CException as Exception;
 /**
  * @property array $feature
  * @property array $options
+ * @property array $properties
+ * @property array $geometry
  */
 class GeoObject extends JavaScript implements Interfaces\GeoObject
 {

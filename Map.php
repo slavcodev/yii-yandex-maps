@@ -5,6 +5,7 @@
 
 namespace YandexMaps;
 
+use StdLib\VarDumper;
 use YandexMaps\Interfaces;
 
 use CException as Exception;
@@ -12,6 +13,7 @@ use CException as Exception;
 /**
  * @property string $id
  * @property array $objects
+ * @property array $controls
  */
 class Map extends JavaScript implements Interfaces\GeoObjectCollection
 {
@@ -40,14 +42,14 @@ class Map extends JavaScript implements Interfaces\GeoObjectCollection
 	public $options = array();
 
 	/** @var array */
-	public $controls = array();
-	/** @var array */
 	public $events = array();
 
 	/** @var string */
 	private $_id;
 	/** @var array */
 	private $_objects = array();
+	/** @var array */
+	private $_controls = array();
 
 	/**
 	 * @param string $id
@@ -59,7 +61,7 @@ class Map extends JavaScript implements Interfaces\GeoObjectCollection
 		$this->setId($id);
 		$this->state = $state;
 		if (isset($options['controls'])) {
-			$this->controls = $options['controls'];
+			$this->setControls($options['controls']);
 			unset($options['controls']);
 		}
 		if (isset($options['events'])) {
@@ -127,9 +129,54 @@ class Map extends JavaScript implements Interfaces\GeoObjectCollection
 
 	/**
 	 * @param mixed $object
+	 * @return $this
 	 */
 	public function addObject($object)
 	{
 		$this->_objects[] = $object;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getControls()
+	{
+		return $this->_controls;
+	}
+
+	/**
+	 * @param array $controls
+	 */
+	public function setControls(array $controls)
+	{
+		$this->_controls = array();
+		foreach ($controls as $control) {
+			$this->addControl($control);
+		}
+	}
+
+	/**
+	 * The control.
+	 * ```php
+	 * $map->addControl(array('smallZoomControl', array(
+	 * 	'left' => '5px',
+	 * 	'top' => '5px',
+	 * )));
+	 * ```
+	 * @param mixed $control
+	 * @return $this
+	 * @throws Exception
+	 * @todo Add control interface.
+	 */
+	public function addControl($control)
+	{
+		if (is_string($control)) {
+			$control = array($control);
+		} elseif (is_array($control) && (!isset($control[0]) || !is_string($control[0]))) {
+			throw new Exception('Invalid control.');
+		}
+		$this->_controls[$control[0]] = $control;
+		return $this;
 	}
 }

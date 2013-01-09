@@ -9,6 +9,7 @@ use YandexMaps\Interfaces;
 
 /**
  * Objects collection.
+ * @property array $objects
  */
 class GeoObjectCollection extends GeoObject implements Interfaces\GeoObjectCollection
 {
