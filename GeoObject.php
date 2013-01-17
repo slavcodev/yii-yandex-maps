@@ -15,12 +15,15 @@ use CException as Exception;
  * @property array $properties
  * @property array $geometry
  */
-class GeoObject extends JavaScript implements Interfaces\GeoObject
+class GeoObject extends JavaScript implements Interfaces\GeoObject, Interfaces\EventAggregate
 {
 	/** @var array */
 	private $_feature;
 	/** @var array */
 	private $_options = array();
+
+	/** @var array */
+	private $_events = array();
 
 	/**
 	 * @param array $feature
@@ -28,6 +31,11 @@ class GeoObject extends JavaScript implements Interfaces\GeoObject
 	 */
 	public function __construct(array $feature, array $options = array())
 	{
+		if (isset($options['events'])) {
+			$this->setEvents($options['events']);
+			unset($options['events']);
+		}
+
 		$this->setFeature($feature);
 		$this->setOptions($options);
 	}
@@ -39,6 +47,22 @@ class GeoObject extends JavaScript implements Interfaces\GeoObject
 	final public function setCode($code)
 	{
 		throw new Exception('Cannot change code directly.');
+	}
+
+	/**
+	 * @param array $events
+	 */
+	public function setEvents(array $events)
+	{
+		$this->_events = $events;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEvents()
+	{
+		return $this->_events;
 	}
 
 	/**

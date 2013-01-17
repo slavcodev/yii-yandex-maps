@@ -67,5 +67,14 @@ class Canvas extends Widget
 		parent::run();
 		$this->htmlOptions['id'] = $this->map->id;
 		echo Html::tag($this->tagName, $this->htmlOptions, '');
+		$this->onAfterRender(new \CEvent($this));
+	}
+
+	/**
+	 * @param \CEvent $event
+	 */
+	public function onAfterRender(\CEvent $event)
+	{
+		$this->raiseEvent('onAfterRender', $event);
 	}
 }

@@ -5,6 +5,7 @@
 
 namespace YandexMaps;
 
+use StdLib\VarDumper;
 use YandexMaps\Interfaces;
 
 use Yii,
@@ -104,6 +105,18 @@ class Api extends Component
 		if (method_exists($this, $generator)) {
 			$var = is_numeric($var) ? null : $var;
 			$js = $this->$generator($object, $var);
+
+			if ($object instanceof Interfaces\EventAggregate && count($object->getEvents()) > 0) {
+				if (null !== $var) {
+					$events = "\n$var.events";
+					foreach ($object->getEvents() as $event => $handle) {
+						$event = JS::encode($event);
+						$handle = JS::encode($handle);
+						$events .= "\n\t.add($event, $handle)";
+					}
+					$js .= "$events;\n";
+				}
+			}
 		} else {
 			$js = JS::encode($object);
 		}
@@ -144,14 +157,33 @@ class Api extends Component
 			$js = "var $var = $js;\n";
 
 			if (count($map->objects) > 0) {
-				$objects = "\n$var.geoObjects";
+				$jsObj = array();
+				$objBegin = false;
+				$objects = '';
 				foreach ($map->objects as $object) {
-					if (is_object($object)) {
-						$object = $this->generateObject($object);
+					if (!is_string($object) && !$object instanceof GeoObject) {
+						if ($objBegin) {
+							$jsObj[] = $object;
+						} else {
+							$js .= "\n$object";
+						}
+					} else {
+						$objBegin = true;
+						if ($object instanceof GeoObject) {
+							$object = $this->generateObject($object);
+						}
+						$objects .= "\n\t.add($object)";
 					}
-					$objects .= "\n\t.add($object)";
 				}
-				$js .= "$objects;\n";
+				$js .= "\n$var.geoObjects$objects;\n";
+				if (count($jsObj) > 0) {
+					$objects = '';
+					foreach ($jsObj as $object) {
+						$object = $this->generateObject($object);
+						$objects .= "\n$object";
+					}
+					$js .= "$objects;\n";
+				}
 			}
 
 			if (count($map->controls) > 0) {
@@ -165,16 +197,6 @@ class Api extends Component
 					}
 				}
 				$js .= "$controls;\n";
-			}
-
-			if (count($map->events) > 0) {
-				$events = "\n$id.events";
-				foreach ($map->events as $event => $handle) {
-					$event = JS::encode($event);
-					$handle = JS::encode($handle);
-					$events .= "\n\t.add($event, $handle)";
-				}
-				$js .= "$events;\n";
 			}
 		}
 

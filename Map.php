@@ -15,7 +15,7 @@ use CException as Exception;
  * @property array $objects
  * @property array $controls
  */
-class Map extends JavaScript implements Interfaces\GeoObjectCollection
+class Map extends JavaScript implements Interfaces\GeoObjectCollection, Interfaces\EventAggregate
 {
 	const CONTROL_MAP_TOOLS = 'mapTools';
 	const CONTROL_MINI_MAP = 'miniMap';
@@ -41,15 +41,15 @@ class Map extends JavaScript implements Interfaces\GeoObjectCollection
 	/** @var array */
 	public $options = array();
 
-	/** @var array */
-	public $events = array();
-
 	/** @var string */
 	private $_id;
 	/** @var array */
 	private $_objects = array();
 	/** @var array */
 	private $_controls = array();
+
+	/** @var array */
+	private $_events = array();
 
 	/**
 	 * @param string $id
@@ -65,7 +65,7 @@ class Map extends JavaScript implements Interfaces\GeoObjectCollection
 			unset($options['controls']);
 		}
 		if (isset($options['events'])) {
-			$this->events = $options['events'];
+			$this->setEvents($options['events']);
 			unset($options['events']);
 		}
 		$this->options = $options;
@@ -109,6 +109,22 @@ class Map extends JavaScript implements Interfaces\GeoObjectCollection
 	}
 
 	/**
+	 * @param array $events
+	 */
+	public function setEvents(array $events)
+	{
+		$this->_events = $events;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEvents()
+	{
+		return $this->_events;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getObjects()
@@ -129,7 +145,7 @@ class Map extends JavaScript implements Interfaces\GeoObjectCollection
 
 	/**
 	 * @param mixed $object
-	 * @return $this
+	 * @return Map
 	 */
 	public function addObject($object)
 	{
