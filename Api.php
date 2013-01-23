@@ -175,7 +175,9 @@ class Api extends Component
 						$objects .= "\n\t.add($object)";
 					}
 				}
-				$js .= "\n$var.geoObjects$objects;\n";
+				if (!empty($objects)){
+					$js .= "\n$var.geoObjects$objects;\n";
+				}
 				if (count($jsObj) > 0) {
 					$objects = '';
 					foreach ($jsObj as $object) {
@@ -224,6 +226,20 @@ class Api extends Component
 		$options = $this->encodeArray($object->options);
 
 		$js = "new ymaps.Polyline($geometry, $properties, $options)";
+		if (null !== $var) {
+			$js = "var $var = $js;\n";
+		}
+
+		return $js;
+	}
+
+	public function generatePolygon(Polygon $object, $var = null)
+	{
+		$geometry = JS::encode($object->geometry);
+		$properties = $this->encodeArray($object->properties);
+		$options = $this->encodeArray($object->options);
+
+		$js = "new ymaps.Polygon($geometry, $properties, $options)";
 		if (null !== $var) {
 			$js = "var $var = $js;\n";
 		}
